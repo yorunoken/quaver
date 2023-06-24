@@ -37,7 +37,6 @@ async function getUsername(message, args) {
     return user;
   }
 
-  message.channel.send("**Either specify a username, or link your osu!bancho account using </link:1106913256339148911>**");
   return false;
 }
 
