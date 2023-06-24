@@ -26,7 +26,7 @@ async function run(message, args, index) {
 module.exports = {
   name: "recent",
   aliases: ["recent", "rs", "r"],
-  cooldown: 2000,
+  cooldown: 1000,
   run: async ({ message, args, index }) => {
     await run(message, args, index - 1 || 0);
   },

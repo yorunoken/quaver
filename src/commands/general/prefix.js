@@ -83,7 +83,7 @@ async function list(message, args) {
 module.exports = {
   name: "prefix",
   aliases: ["prefix"],
-  cooldown: 2000,
+  cooldown: 1000,
   run: async ({ message, args }) => {
     if (args.includes("-list")) {
       await list(message, args);

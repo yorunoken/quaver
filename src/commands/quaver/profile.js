@@ -23,7 +23,7 @@ async function run(message, args) {
 module.exports = {
   name: "profile",
   aliases: ["profile"],
-  cooldown: 2000,
+  cooldown: 1000,
   run: async ({ message, args }) => {
     await run(message, args);
   },
