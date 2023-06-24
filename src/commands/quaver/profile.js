@@ -5,6 +5,10 @@ const { EmbedBuilder } = require("discord.js");
 
 async function run(message, args) {
   let username = await getUsername(message, args);
+  if (!username) {
+    const embed = new EmbedBuilder().setColor("Blue").setTitle("There was an Error.").setDescription(`Error: Either provide a username or link your account to the bot using \`link\``);
+    return message.channel.send({ embeds: [embed] });
+  }
 
   const profile = await user.details(username);
   if (profile.status === 404) {
