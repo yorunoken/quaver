@@ -8,7 +8,7 @@ async function run(message) {
 module.exports = {
   name: "ping",
   aliases: ["pong"],
-  cooldown: 5000,
+  cooldown: 2000,
   run: async ({ message, args }) => {
     await run(message);
   },
