@@ -90,7 +90,7 @@ module.exports = {
       return;
     }
 
-    if (!msg.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
+    if (!message.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
       return message.channel.send('You don\'t have the appropriate permissions to use this command! (Need "Manage Guild")');
     }
 
