@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "build": "tsc",
-    "start": "node ."
+    "start": "tsc && node ."
   },
   "keywords": [
     "quaver"
