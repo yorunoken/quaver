@@ -1,4 +1,6 @@
-async function run(message) {
+import { Message } from "discord.js";
+
+async function run(message: Message) {
   const timeNow = Date.now();
   const response = await message.channel.send(`Pong! 🏓`);
   const ms = Date.now() - timeNow;
@@ -9,7 +11,7 @@ module.exports = {
   name: "ping",
   aliases: ["pong"],
   cooldown: 1000,
-  run: async ({ message, args }) => {
+  run: async ({ message }: { message: Message }) => {
     await run(message);
   },
 };

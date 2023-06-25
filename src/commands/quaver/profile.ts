@@ -1,9 +1,9 @@
-const { user } = require("quaver-api-wrapper");
-const { getUsername } = require("../../utils/getUsername");
-const { profileEmbed } = require("../../commands-embeds/userProfile");
-const { EmbedBuilder } = require("discord.js");
+import { user } from "quaver-api-wrapper";
+import { getUsername } from "../../utils/getUsername";
+import { profileEmbed } from "../../commands-embeds/userProfile";
+import { EmbedBuilder, Message } from "discord.js";
 
-async function run(message, args) {
+async function run(message: Message, args: any[]) {
   let username = await getUsername(message, args);
   if (!username) {
     const embed = new EmbedBuilder().setColor("Blue").setTitle("There was an Error.").setDescription(`Error: Either provide a username or link your account to the bot using \`link\``);
@@ -24,7 +24,7 @@ module.exports = {
   name: "profile",
   aliases: ["profile"],
   cooldown: 1000,
-  run: async ({ message, args }) => {
+  run: async ({ message, args }: { message: Message; args: any[] }) => {
     await run(message, args);
   },
 };

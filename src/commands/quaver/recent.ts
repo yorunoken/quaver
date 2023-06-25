@@ -1,9 +1,9 @@
-const { user, modes } = require("quaver-api-wrapper");
-const { getUsername } = require("../../utils/getUsername");
-const { recentEmbed } = require("../../commands-embeds/recentEmbed");
-const { EmbedBuilder } = require("discord.js");
+import { user, modes } from "quaver-api-wrapper";
+import { getUsername } from "../../utils/getUsername";
+import { recentEmbed } from "../../commands-embeds/recentEmbed";
+import { EmbedBuilder, Message } from "discord.js";
 
-async function run(message, args, index) {
+async function run(message: Message, args: any[], index: number) {
   let username = await getUsername(message, args);
   if (!username) {
     const embed = new EmbedBuilder().setColor("Blue").setTitle("There was an Error.").setDescription(`Error: Either provide a username or link your account to the bot using \`link\``);
@@ -13,13 +13,13 @@ async function run(message, args, index) {
   let profile = await user.details(username);
   const plays = await user.scores(profile.info.id, { mode: modes.Key4, type: "recent" });
 
-  if (plays.status === 404) {
-    const embed = new EmbedBuilder().setColor("Blue").setTitle("There was an Error.").setDescription(plays.error);
+  if (plays[0].status === 404) {
+    const embed = new EmbedBuilder().setColor("Blue").setTitle("There was an Error.").setDescription(plays[0].error);
     return message.channel.send({ embeds: [embed] });
   }
 
   let keys = 4;
-  const embed = recentEmbed(profile, plays, index, 4);
+  const embed = recentEmbed(profile, plays, index, keys);
   message.channel.send({ embeds: [embed] });
 }
 
@@ -27,7 +27,7 @@ module.exports = {
   name: "recent",
   aliases: ["recent", "rs", "r"],
   cooldown: 1000,
-  run: async ({ message, args, index }) => {
+  run: async ({ message, args, index }: { message: Message; args: any[]; index: number | null }) => {
     await run(message, args, index - 1 || 0);
   },
 };

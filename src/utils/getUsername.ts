@@ -1,8 +1,7 @@
-const { query } = require("./getQuery.js");
+import { query } from "./getQuery";
+import { Message } from "discord.js";
 
-async function getUsername(message, args) {
-  const now = Date.now();
-
+export async function getUsername(message: Message, args: any[]) {
   const unOsu = ["-k4", "-keys4", "-k7", "-keys7"];
   const unAllowed = ["-p", "-page", "-index", "-i"];
   args = args.filter((arg) => !unOsu.includes(arg));
@@ -40,7 +39,7 @@ async function getUsername(message, args) {
   return false;
 }
 
-async function getByTag(user) {
+async function getByTag(user: string) {
   const regex = /<@(\d+)>/;
   const match = user.match(regex);
   if (match) {
@@ -51,7 +50,7 @@ async function getByTag(user) {
   return undefined;
 }
 
-async function getByID(user) {
+async function getByID(user: string) {
   const regex = /.*(\d{17,}).*/;
   if (regex.test(user)) {
     const userID = user.match(/\d+/)[0];
@@ -61,7 +60,7 @@ async function getByID(user) {
   return undefined;
 }
 
-async function getByString(user, message) {
+async function getByString(user: string, message: Message) {
   if (!user || user.length === 0) {
     const userID = message.author.id;
     const res = await query({ query: `SELECT value FROM users WHERE id = ${userID}`, type: "get" });
@@ -71,5 +70,3 @@ async function getByString(user, message) {
   user = user.replace(/["']/g, "");
   return user;
 }
-
-module.exports = { getUsername };

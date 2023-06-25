@@ -1,5 +1,22 @@
-const { Client, Collection, GatewayIntentBits, Partials } = require("discord.js");
-const client = new Client({
+import { Client, Collection } from "discord.js";
+import { GatewayIntentBits, Partials } from "discord.js";
+import dotenv from "dotenv";
+dotenv.config();
+import fs from "fs";
+import path from "path";
+
+export class MyClient extends Client {
+  prefixCommands: Collection<any, any>;
+  aliases: Collection<any, any>;
+
+  constructor(options: any) {
+    super(options);
+    this.prefixCommands = new Collection();
+    this.aliases = new Collection();
+  }
+}
+
+const client = new MyClient({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMembers,
@@ -20,12 +37,8 @@ const client = new Client({
   shards: "auto",
   partials: [Partials.Message, Partials.Channel, Partials.GuildMember, Partials.Reaction, Partials.GuildScheduledEvent, Partials.User, Partials.ThreadMember],
 });
-require("dotenv/config");
-const fs = require("fs");
-const token = process.env.TOKEN;
 
-client.prefixCommands = new Collection();
-client.aliases = new Collection();
+const token = process.env.TOKEN;
 
 const prefixCommands = [];
 const prefixFolders = fs.readdirSync("./src/commands");
@@ -33,24 +46,37 @@ for (const folder of prefixFolders) {
   const commandFiles = fs.readdirSync(`./src/commands/${folder}`);
 
   for (const file of commandFiles) {
-    const command = require(`./commands/${folder}/${file}`);
+    const commandFilePath = `./src/commands/${folder}/${file}`;
+    const commandFileName = path.parse(commandFilePath).name;
+
+    const command = require(`./commands/${folder}/${commandFileName}`);
+
     client.prefixCommands.set(command.name, command);
     prefixCommands.push(command.name, command);
     if (command.aliases && Array.isArray(command.aliases)) {
-      command.aliases.forEach((alias) => {
+      command.aliases.forEach((alias: any) => {
         client.aliases.set(alias, command.name);
       });
     }
   }
 }
 
+(async () => {
+  await client.login(token);
+})();
+
 client.on("ready", async () => {
   console.log(`Logged in as ${client.user.tag}`);
 });
 
-fs.readdirSync("./src/handlers").forEach(async (file) => {
-  const event = await require(`./handlers/${file}`);
-  client.on(event.name, (...args) => event.execute(...args));
+fs.readdirSync("./src/handlers").forEach(async (file: any) => {
+  const commandFilePath = `./handlers/${file}`;
+  const commandFileName = path.parse(commandFilePath).name;
+
+  const event = await require(`./handlers/${commandFileName}`);
+  console.log(event);
+
+  client.on(event.name, (...args: any) => event.execute(...args, client));
 });
 
 // nodejs events
@@ -63,5 +89,3 @@ process.on("uncaughtException", (e) => {
 process.on("uncaughtExceptionMonitor", (e) => {
   console.error(e);
 });
-
-client.login(token);

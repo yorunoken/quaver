@@ -2,3 +2,4 @@ misc/
 node_modules/
 .env
 database.sqlite
+dist/

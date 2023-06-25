@@ -1,15 +1,9 @@
-const { user } = require("quaver-api-wrapper");
-const { getUsername } = require("../../utils/getUsername");
-const { EmbedBuilder, Message } = require("discord.js");
-const { query } = require("../../utils/getQuery.js");
+import { user } from "quaver-api-wrapper";
+import { getUsername } from "../../utils/getUsername";
+import { EmbedBuilder, Message } from "discord.js";
+import { query } from "../../utils/getQuery.js";
 
-/**
- *
- * @param {Message} message
- * @param {string} args
- * @returns
- */
-async function run(message, args) {
+async function run(message: Message, args: any[]) {
   let username = await getUsername(message, args);
   if (!username) {
     const embed = new EmbedBuilder().setColor("Blue").setTitle("There was an Error.").setDescription(`Error: Either provide a username or link your account to the bot using \`link\``);
@@ -21,7 +15,7 @@ async function run(message, args) {
     const embed = new EmbedBuilder().setColor("Blue").setTitle("There was an Error.").setDescription(profile.error);
     return message.channel.send({ embeds: [embed] });
   }
-  let id = profile.info.id;
+  let id = profile.info.id.toString();
 
   const qUser = await query({ query: `SELECT * FROM users WHERE id = ?`, parameters: [message.author.id], type: "get" });
   if (!qUser) {
@@ -41,7 +35,7 @@ module.exports = {
   name: "link",
   aliases: ["link"],
   cooldown: 1000,
-  run: async ({ message, args }) => {
+  run: async ({ message, args }: { message: Message; args: any[] }) => {
     await run(message, args);
   },
 };

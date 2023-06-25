@@ -1,4 +1,6 @@
-const { EmbedBuilder } = require("discord.js");
+import { EmbedBuilder } from "discord.js";
+import { Details } from "quaver-api-wrapper/dist/types/user/details";
+import { Scores } from "quaver-api-wrapper/dist/types/user/scores";
 
 const options = {
   X: "<:X_Quaver:1122260503163580536>",
@@ -11,7 +13,7 @@ const options = {
   F: "<:F_Quaver:1122274681328771252>",
 };
 
-function recentEmbed(user, plays, index, keys) {
+export function recentEmbed(user: Details, plays: Scores[], index: number, keys: number) {
   let play = plays[index];
 
   const grade = options[play.grade];
@@ -35,7 +37,7 @@ function recentEmbed(user, plays, index, keys) {
   return new EmbedBuilder().setColor("Blue").setTitle(title).setURL(mapUrl).setThumbnail(avatarUrl).setAuthor(author).setImage(backgroundImage).setFields(field);
 }
 
-function getAuthor(user, keys) {
+function getAuthor(user: Details, keys: number) {
   const flagImage = `https://osu.ppy.sh/images/flags/${user.info.country}.png`;
 
   if (keys == 4) {
@@ -52,7 +54,7 @@ function getAuthor(user, keys) {
   };
 }
 
-function abbrevator(number) {
+function abbrevator(number: number) {
   const abbreviations = [
     [1e9, "B"],
     [1e6, "M"],
@@ -60,13 +62,11 @@ function abbrevator(number) {
   ];
 
   for (let i = 0; i < abbreviations.length; i++) {
-    if (number >= abbreviations[i][0]) {
-      const abbreviatedNumber = number / abbreviations[i][0];
+    if (number >= (abbreviations[i][0] as number)) {
+      const abbreviatedNumber = number / (abbreviations[i][0] as number);
       return abbreviatedNumber.toFixed(1) + abbreviations[i][1];
     }
   }
 
   return number.toString();
 }
-
-module.exports = { recentEmbed };

@@ -1,5 +1,5 @@
-const { Message, EmbedBuilder, PermissionFlagsBits } = require("discord.js");
-const { query } = require("../../utils/getQuery.js");
+import { Message, EmbedBuilder, PermissionFlagsBits } from "discord.js";
+import { query } from "../../utils/getQuery.js";
 
 /**
  *
@@ -7,11 +7,11 @@ const { query } = require("../../utils/getQuery.js");
  * @returns
  */
 
-async function add(message, args) {
+async function add(message: Message, args: any[]) {
   await message.channel.sendTyping();
 
   const serverId = message.guildId.toString();
-  const serverCon = await query({ query: `SELECT * FROM servers WHERE id = ?`, parameters: [serverId], type: "get", name: "value" });
+  const serverCon = await query({ query: `SELECT * FROM servers WHERE id = ?`, parameters: [serverId], type: "get" });
   const newPrefix = args.join(" ");
   if (!serverCon) {
     const jsonArray = JSON.stringify([newPrefix]);
@@ -37,11 +37,11 @@ async function add(message, args) {
   message.channel.send({ embeds: [embed] });
 }
 
-async function remove(message, args) {
+async function remove(message: Message, args: any[]) {
   await message.channel.sendTyping();
 
   const serverId = message.guildId.toString();
-  const serverCon = await query({ query: `SELECT * FROM servers WHERE id = ?`, parameters: [serverId], type: "get", name: "value" });
+  const serverCon = await query({ query: `SELECT * FROM servers WHERE id = ?`, parameters: [serverId], type: "get" });
   const removePrefix = args.join(" ");
 
   const prefixBoolean = serverCon.includes(removePrefix);
@@ -50,7 +50,7 @@ async function remove(message, args) {
     return message.channel.send({ embeds: [embed] });
   }
 
-  const newArray = serverCon.filter((filter) => filter !== removePrefix);
+  const newArray = serverCon.filter((filter: any) => filter !== removePrefix);
   const jsonArray = JSON.stringify(newArray);
 
   await query({
@@ -66,15 +66,15 @@ async function remove(message, args) {
   message.channel.send({ embeds: [embed] });
 }
 
-async function list(message, args) {
+async function list(message: Message, args: any[]) {
   await message.channel.sendTyping();
 
   const serverId = message.guildId.toString();
-  const serverCon = await query({ query: `SELECT * FROM servers WHERE id = ?`, parameters: [serverId], type: "get", name: "value" });
+  const serverCon = await query({ query: `SELECT * FROM servers WHERE id = ?`, parameters: [serverId], type: "get" });
 
   var prefixes = "! (default)";
   if (serverCon?.length > 0) {
-    var prefixes = serverCon.join(", ");
+    var prefixes: string = serverCon.join(", ");
   }
   var embed = new EmbedBuilder().setTitle("Prefixes").setColor("Green").setDescription(`Prefixes of this server:\n\`${prefixes}\``);
   message.channel.send({ embeds: [embed] });
@@ -84,7 +84,7 @@ module.exports = {
   name: "prefix",
   aliases: ["prefix"],
   cooldown: 1000,
-  run: async ({ message, args }) => {
+  run: async ({ message, args }: { message: Message; args: any[] }) => {
     if (args.includes("-list")) {
       await list(message, args);
       return;
