@@ -1,9 +1,9 @@
 import { user, modes } from "quaver-api-wrapper";
 import { getUsername } from "../../utils/getUsername";
-import { recentEmbed } from "../../commands-embeds/recentEmbed";
+import { topEmbed } from "../../commands-embeds/topEmbed";
 import { EmbedBuilder, Message } from "discord.js";
 
-async function run(message: Message, args: any[], index: number, keys: number, mode: "Key4" | "Key7") {
+async function run(message: Message, args: any[], index: number, keys: number, mode: "Key4" | "Key7", options: any) {
   let username = await getUsername(message, args);
   if (!username) {
     const embed = new EmbedBuilder().setColor("Blue").setTitle("There was an Error.").setDescription(`Error: Either provide a username or link your account to the bot using \`link\``);
@@ -11,7 +11,7 @@ async function run(message: Message, args: any[], index: number, keys: number, m
   }
 
   let profile = await user.details(username);
-  const plays = await user.scores(profile.info.id, { mode: modes[mode], type: "recent" });
+  const plays = await user.scores(profile.info.id, { mode: modes[mode], type: "best" });
   if (plays.length === 0) {
     const embed = new EmbedBuilder().setColor("Blue").setDescription(`${profile.info.username} has no plays.`);
     return message.channel.send({ embeds: [embed] });
@@ -22,13 +22,13 @@ async function run(message: Message, args: any[], index: number, keys: number, m
     return message.channel.send({ embeds: [embed] });
   }
 
-  const embed = recentEmbed(profile, plays, index, keys);
+  const embed = topEmbed(profile, plays, index, keys, options);
   message.channel.send({ embeds: [embed] });
 }
 
 module.exports = {
   name: "top",
-  aliases: ["recent", "rs", "r", "recent4k", "rs4k", "r4k", "recent7k", "rs7k", "r7k"],
+  aliases: ["top", "tops", "t", "top4k", "tops4k", "t4k", "top7k", "tops7k", "t7k"],
   cooldown: 1000,
   run: async ({ message, args, index, commandName }: { message: Message; args: any[]; index: number | null; commandName: string }) => {
     let keys = 4;
@@ -38,6 +38,15 @@ module.exports = {
       keys = 7;
       mode = "Key7";
     }
-    await run(message, args, index - 1 || 0, keys, mode);
+
+    let options: any = {};
+    for (const arg of args) {
+      const [key, value] = arg.split("=");
+      if (key && value) {
+        options[key] = value;
+      }
+    }
+
+    await run(message, args, index - 1 || 0, keys, mode, options);
   },
 };

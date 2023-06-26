@@ -40,7 +40,7 @@ module.exports = {
 
     let commandName = cmd;
     let number;
-    const match = cmd.match(/(\D+)(\d+)/);
+    const match = cmd.match(/(\D+)(\d+)$/);
     if (match) {
       commandName = match[1];
       number = Number(match[2]);
