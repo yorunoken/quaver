@@ -27,7 +27,7 @@ async function run(message: Message, args: any[], index: number, keys: number, m
 }
 
 module.exports = {
-  name: "top",
+  name: "recent",
   aliases: ["recent", "rs", "r", "recent4k", "rs4k", "r4k", "recent7k", "rs7k", "r7k"],
   cooldown: 1000,
   run: async ({ message, args, index, commandName }: { message: Message; args: any[]; index: number | null; commandName: string }) => {
